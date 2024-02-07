@@ -8,16 +8,13 @@ import { SidebarComponent } from './components/sidebar/sidebar.component';
 import { TableComponent } from './components/table/table.component';
 import { EffectsModule } from '@ngrx/effects';
 import { HttpClientModule } from '@angular/common/http';
-import { LetDirective, PushPipe } from '@ngrx/component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 // Material Design Components
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // New Import
-import { MultiselectDropdownComponent } from './components/table/multiselect-dropdown/multiselect-dropdown.component';
 import { NotificationComponent } from './components/notification/notification.component';
-import { CdkColumnDef } from '@angular/cdk/table';
 import { RouterModule } from '@angular/router';
 import { AppEffects } from './state/app.effects';
 import { reducers, metaReducers } from './state/reducers';
@@ -26,6 +23,9 @@ import { TableNavComponent } from './components/table/table-nav/table-nav.compon
 import { TableMenuComponent } from './components/table/table-menu/table-menu.component';
 import { VariableOptionsComponent } from './components/table/variable-options/variable-options.component';
 import { OptionsComponent } from './components/sidebar/options/options.component';
+import { EditComponent } from './components/table/modal/edit/edit.component';
+import { ChartComponent } from './components/table/modal/chart/chart.component';
+import { ModalComponent } from './components/table/modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -51,8 +51,6 @@ import { OptionsComponent } from './components/sidebar/options/options.component
     ReactiveFormsModule,
     // Add this line to 'activate effects for actions'
     EffectsModule.forRoot([AppEffects]),
-    // Using @Input with ngRx
-    PushPipe,
     NgxDatatableModule,
     BrowserAnimationsModule,
     // Standalone Components
@@ -60,6 +58,7 @@ import { OptionsComponent } from './components/sidebar/options/options.component
     TableNavComponent,
     TableMenuComponent,
     OptionsComponent,
+    ModalComponent,
   ],
   bootstrap: [AppComponent],
 })

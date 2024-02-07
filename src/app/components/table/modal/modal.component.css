@@ -1,0 +1,6 @@
+.variable-modal[show] {
+  @apply flex-col justify-between h-screen w-1/2 rounded;
+}
+.modal-header {
+  @apply dark:text-dark-inverse-surface;
+}

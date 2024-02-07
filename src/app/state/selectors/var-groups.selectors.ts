@@ -2,9 +2,16 @@ import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { VarAndGroupsState } from '../reducers/var-and-groups.reducer';
 import {
   selectDatasetFeature,
+  selectDatasetVariableGroups,
   selectDatasetVariables,
 } from './dataset.selectors';
-import { Variable } from '../interface';
+import { Variable, VariableGroup } from '../interface';
+import {
+  selectOpenVariableData,
+  selectOpenVariableID,
+  selectOpenVariableModalMode,
+  selectUIFeature,
+} from './ui.selectors';
 
 export const selectVarAndGroupsFeature =
   createFeatureSelector<VarAndGroupsState>('var-and-groups');
@@ -74,7 +81,7 @@ export const selectCurrentVariableSelected = createSelector(
 
 export const selectVariableWeights = createSelector(
   selectDatasetVariables,
-  (datasetVariables) => {
+  (datasetVariables): { [id: string]: string } => {
     const weights: {
       [id: string]: string;
     } = {};
@@ -93,21 +100,20 @@ export const selectVariableWeights = createSelector(
 );
 
 export const selectVariablesWithGroupsReference = createSelector(
-  selectDatasetFeature,
+  selectDatasetVariableGroups,
   selectDatasetVariables,
-  (datasetState, datasetVariables) => {
-    const groups = datasetState.dataset?.codeBook.dataDscr.varGrp;
+  (groups, datasetVariables) => {
     const variablesGroupsReference: {
-      [variableID: string]: { groups: string[]; label: string };
+      [variableID: string]: { groups: VariableGroup[]; label: string };
     } = {};
     if (datasetVariables) {
       groups?.map((variableGroup) => {
         variableGroup['@_var'].split(' ').map((variableID) => {
           variablesGroupsReference[variableID]
-            ? variablesGroupsReference[variableID].groups.push(variableID)
+            ? variablesGroupsReference[variableID].groups.push(variableGroup)
             : (variablesGroupsReference[variableID] = {
                 label: datasetVariables[variableID].labl['#text'],
-                groups: [variableID],
+                groups: [variableGroup],
               });
         });
       });
