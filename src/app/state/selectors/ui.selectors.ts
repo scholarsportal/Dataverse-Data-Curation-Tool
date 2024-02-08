@@ -62,9 +62,7 @@ export const selectOpenVariableSelectedGroups = createSelector(
 export const selectOpenVariableDataAsForm = createSelector(
   selectOpenVariableID,
   selectDatasetVariables,
-  selectVariableWeights,
-  selectOpenVariableSelectedGroups,
-  (variableID, datasetVariables, variableWeights, groups) => {
+  (variableID, datasetVariables) => {
     const formData: VariableForm = initVariableForm;
     if (datasetVariables && variableID) {
       formData.id = datasetVariables[variableID]['@_ID'];
@@ -77,7 +75,7 @@ export const selectOpenVariableDataAsForm = createSelector(
       formData.notes = datasetVariables[variableID].notes['#text'] || '';
       formData.weight = datasetVariables[variableID]['@_wgt-var'] || '';
       formData.isWeight = datasetVariables[variableID]['@_wgt'] ? true : false;
-      return { formData, variableWeights, groups };
+      return formData;
     }
     return;
   }
@@ -94,7 +92,7 @@ export const selectOpenVariableWeight = createSelector(
   }
 );
 
-export const selectOpenVariableDataAsChart = createSelector(
+export const selectOpenVariableDataChartTable = createSelector(
   selectOpenVariableData,
   (variable) => {
     const chart: {
@@ -103,6 +101,7 @@ export const selectOpenVariableDataAsChart = createSelector(
         categories: string;
         count: string | number;
         countPercent: number;
+        valid: boolean;
         countWeighted?: string | number;
       };
     } = {};
@@ -115,6 +114,7 @@ export const selectOpenVariableDataAsChart = createSelector(
           categories: variableCategory.labl['#text'],
           count: variableCategory.catStat[0]['#text'],
           countWeighted: variableCategory.catStat[1]['#text'],
+          valid: true,
         };
         total += variableCategory.catStat[0]['#text'] as number;
       });
@@ -127,60 +127,64 @@ export const selectOpenVariableDataAsChart = createSelector(
   }
 );
 
+export const selectOpenVariableDataChart = createSelector(
+  selectOpenVariableDataChartTable,
+  (state) => {
+    const chartData: { y: string; x: number | null }[] = [];
+    Object.values(state).map((value) =>
+      chartData.push({
+        y: value.categories,
+        x: parseFloat(value.count as string) || 0,
+      })
+    );
+    return chartData;
+  }
+);
+
 export const selectOpenVariableDataAsSummaryStat = createSelector(
   selectOpenVariableData,
   (variable) => {
-    const sumStats: {
-      mean?: string;
-      mode?: string;
-      median?: string | number;
-      totalValidCount?: string;
-      totalInvalidCount?: string;
-      minimum?: string;
-      maximum?: string;
-      standardDeviation?: string;
-    } = {};
+    const sumStats: { key: string; value: string }[] = [];
     if (variable?.sumStat) {
       variable.sumStat.map((value) => {
         switch (value['@_type']) {
           case 'mean':
-            sumStats.mean = value['#text'] as string;
+            sumStats.push({ key: 'Mean', value: value['#text'] as string });
             break;
           case 'mode':
-            sumStats.mode = value['#text'] as string;
+            sumStats.push({ key: 'Mode', value: value['#text'] as string });
             break;
           case 'medn':
-            sumStats.median = value['#text'] as string;
+            sumStats.push({ key: 'Median', value: value['#text'] as string });
             break;
           case 'invd':
-            sumStats.totalInvalidCount = value['#text'] as string;
+            sumStats.push({
+              key: 'Total Invalid Count',
+              value: value['#text'] as string,
+            });
             break;
           case 'min':
-            sumStats.minimum = value['#text'] as string;
+            sumStats.push({ key: 'Minimum', value: value['#text'] as string });
             break;
           case 'stdev':
-            sumStats.standardDeviation = value['#text'] as string;
+            sumStats.push({
+              key: 'Standard Deviation',
+              value: value['#text'] as string,
+            });
             break;
           case 'max':
-            sumStats.maximum = value['#text'] as string;
+            sumStats.push({ key: 'Maximum', value: value['#text'] as string });
             break;
           case 'vald':
-            sumStats.totalValidCount = value['#text'] as string;
+            sumStats.push({
+              key: 'Total Valid Count',
+              value: value['#text'] as string,
+            });
             break;
         }
       });
-      console.log(sumStats);
       return sumStats;
     }
     return sumStats;
-  }
-);
-
-export const selectChartData = createSelector(
-  selectOpenVariableDataAsForm,
-  selectOpenVariableDataAsChart,
-  selectOpenVariableDataAsSummaryStat,
-  (form, chart, sumStat) => {
-    return { form, chart, sumStat };
   }
 );
