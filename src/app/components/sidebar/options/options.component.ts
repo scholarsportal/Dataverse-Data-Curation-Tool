@@ -8,17 +8,18 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
-import { selectIsOptionsMenuOpen } from 'src/app/state/selectors/ui.selectors';
+import { selectIsOptionsMenuOpen } from 'src/app/state/selectors/open-variable.selectors';
 import { Subscription } from 'rxjs';
 import {
   closeOptionsMenu,
   openOptionsMenu,
 } from 'src/app/state/actions/ui.actions';
+import { ImportComponent } from './import/import.component';
 
 @Component({
   selector: 'dct-options',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ImportComponent],
   templateUrl: './options.component.html',
   styleUrl: './options.component.css',
 })

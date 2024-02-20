@@ -19,10 +19,10 @@ interface SummaryStatistic {
   '@_wgtd'?: string; // Optional property
 }
 
-interface Category {
+export interface Category {
   catValu: number;
   labl: Label;
-  catStat: SummaryStatistic[];
+  catStat: SummaryStatistic[] | SummaryStatistic;
 }
 
 export interface Variable {
