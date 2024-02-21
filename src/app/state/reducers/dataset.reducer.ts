@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import * as DatasetActions from '../actions/dataset.actions';
-import { JSONStructure } from '../interface';
+import * as VarAndGroups from '../actions/var-and-groups.actions';
+import { JSONStructure, VariableGroup } from '../interface';
 
 export interface DatasetState {
   dataset: JSONStructure | null;
@@ -54,5 +55,99 @@ export const datasetReducer = createReducer(
       status: 'error' as const,
       errorMessage: error,
     })
-  )
+  ),
+  on(DatasetActions.saveVariable, (state, { variableID, variable, groups }) => {
+    const newState = JSON.parse(JSON.stringify(state));
+    if (newState) {
+      const variables = newState.dataset?.codeBook.dataDscr.var || [];
+      const varGroups: VariableGroup[] =
+        newState.dataset?.codeBook.dataDscr.varGrp || [];
+      for (let index = 0; index < variables.length; index++) {
+        if (variables[index]['@_ID'] === variableID) {
+          variables[index].labl['#text'] = variable.label;
+          variables[index]['qstn'] = {
+            ivuInstr: variable.interviewQuestion ?? '',
+            postQTxt: variable.postQuestion ?? '',
+            qstnLit: variable.literalQuestion,
+          };
+          variables[index].universe = variable.universe ?? '';
+          variables[index].notes = {
+            ...variables[index].notes,
+            '#text': variable.notes ?? '',
+          };
+          variable.isWeight
+            ? (variables[index]['@_wgt'] = 'wgt')
+            : (variables[index]['@_wgt'] = null);
+          variables[index]['@_wgt-var'] =
+            (variables[index]['@_wgt'] ? '' : variable.weight) ?? '';
+          break;
+        }
+      }
+      for (let index = 0; index < varGroups.length; index++) {
+        const variablesInGroup = varGroups[index]['@_var'].split(' ');
+        const variableIndex = variablesInGroup.indexOf(variableID);
+        // if current var group includes current id AND is not in the new group selected
+        if (
+          variableIndex !== -1 &&
+          variablesInGroup.includes(variableID) &&
+          !groups.includes(varGroups[index]['@_ID'])
+        ) {
+          variablesInGroup.splice(variableIndex, 1);
+        }
+        if (
+          !variablesInGroup.includes(variableID) &&
+          groups.includes(varGroups[index]['@_ID'])
+        ) {
+          variablesInGroup.push(variableID);
+        }
+        varGroups[index]['@_var'] = variablesInGroup.join(' ');
+      }
+    }
+    return { ...newState };
+  }),
+  on(VarAndGroups.groupCreateNew, (state, { groupID, label }) => {
+    const newState: DatasetState = JSON.parse(JSON.stringify(state));
+    if (newState) {
+      newState.dataset?.codeBook?.dataDscr?.varGrp?.push({
+        '@_ID': groupID,
+        labl: label,
+        '@_var': '',
+      });
+    }
+    return {
+      ...newState,
+    };
+  }),
+  on(VarAndGroups.groupDelete, (state, { groupID }) => {
+    const newState: DatasetState = JSON.parse(JSON.stringify(state));
+    if (newState) {
+      const arr = newState.dataset?.codeBook.dataDscr.varGrp || [];
+      for (let index = 0; index < arr.length; index++) {
+        const element = arr[index];
+        if (element['@_ID'] === groupID) {
+          arr.splice(index, 1);
+          break;
+        }
+      }
+    }
+    return {
+      ...newState,
+    };
+  }),
+  on(VarAndGroups.groupChangeName, (state, { groupID, newName }) => {
+    const newState: DatasetState = JSON.parse(JSON.stringify(state));
+    if (newState) {
+      const arr = newState.dataset?.codeBook.dataDscr.varGrp || [];
+      for (let index = 0; index < arr.length; index++) {
+        const element = arr[index];
+        if (element['@_ID'] === groupID) {
+          element.labl = newName;
+        }
+      }
+      console.log(arr);
+    }
+    return {
+      ...newState,
+    };
+  })
 );
