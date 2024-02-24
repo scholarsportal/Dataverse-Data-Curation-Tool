@@ -1,0 +1,16 @@
+.bulk-button {
+  @apply flex 
+  flex-row 
+  rounded 
+  border
+  px-3 
+  hover:shadow-lg;
+}
+
+.form-input {
+  @apply rounded border;
+}
+
+.form-label {
+  @apply flex flex-col my-1.5;
+}

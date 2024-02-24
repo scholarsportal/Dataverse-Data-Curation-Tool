@@ -8,28 +8,16 @@ A demo of the tool is available here; note that this Github pages demo is **not 
 
 ## Installation
 ### Pre-Requisites
-- Bun (javascript runtime for server)
 - NodeJS (runtime for Angular and client)
 - Angular (client framework)
 
-The Data Curation Tool was created using BunJS for the server and Angular CLI version 16.2.10.
-In order to generate node_modules run `cd server && bun install && cd ../client/ && npm install`.
-
 See [the Dataverse guide for more information about installing external tools](http://guides.dataverse.org/en/latest/installation/external-tools.html).
 
-Run the tool by running two different processes
-
-Process One
 ``` sh
-cd server 
-bun run start
+npm install
+ng serve
 ```
 
-Process Two
-``` sh
-cd server 
-bun run start
-```
 ## Using the Data Curation Tool
 
 ### Main Interface
