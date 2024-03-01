@@ -6,9 +6,9 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Store } from '@ngrx/store';
 import { VariableForm, VariableGroup } from 'src/app/state/interface';
-import { Chart } from 'chart.js/auto';
+import { Chart, Colors } from 'chart.js/auto';
+import { backgroundColor, shuffleColours } from './chart.interface';
 
 interface ChartData {
   values: number;
@@ -79,14 +79,6 @@ export class ChartComponent implements OnInit, OnChanges {
     // redraw chart without items in select list
   }
 
-  private truncateText(text: string): string {
-    const maxLength = 13;
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength - 3) + '...';
-    }
-    return text;
-  }
-
   private createChart() {
     this.chartJS = new Chart('variableChart', {
       type: 'bar',
@@ -94,6 +86,7 @@ export class ChartComponent implements OnInit, OnChanges {
         datasets: [
           {
             data: this.chart,
+            backgroundColor: shuffleColours(),
           },
         ],
       },
