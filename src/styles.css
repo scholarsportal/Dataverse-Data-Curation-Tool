@@ -4,11 +4,11 @@
 
 @layer base {
   h1 {
-    @apply text-3xl lg:text-4xl font-light;
+    @apply text-2xl lg:text-2xl font-light;
   }
 
   h2 {
-    @apply text-xl lg:text-2xl font-light;
+    @apply text-xl lg:text-xl font-light;
   }
 
   button {
@@ -16,7 +16,7 @@
   }
 
   datatable-header {
-    @apply pt-5 border-b border-light-outline dark:border-dark-outline-variant dark:text-light-outline-variant;
+    @apply pt-5 font-bold border-light-outline dark:border-dark-outline-variant dark:text-light-outline-variant;
   }
 
   datatable-footer {
@@ -25,6 +25,10 @@
 
   datatable-body-row {
     @apply border-t w-full h-16 border-light-outline-variant dark:border-light-outline dark:text-light-outline-variant;
+  }
+
+  datatable-pager  a {
+    padding-left: 1rem;
   }
 
   .ngx-datatable.bootstrap .datatable-body-row,
@@ -38,9 +42,27 @@
     .datatable-row-group {
     @apply bg-light-surface-variant dark:bg-gray-800 transition-colors duration-100;
   }
+  .rounded-box {
+    @apply rounded-none;
+  }
+  
 }
 
 @layer components {
+  .btn {
+    border-radius: 4px;
+    border-color: transparent;
+    font-size: 0.75rem;
+    height: 2.5rem;
+    min-height: 2.5rem;
+  }
+
+  .input, .select {
+    height: 2.5rem;
+    min-height: 2.5rem;
+    border-radius: 4px;
+  }
+  
   /* Primary */
   .primary {
     @apply bg-light-primary dark:bg-dark-primary;

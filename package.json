@@ -44,6 +44,7 @@
     "@types/lodash": "^4.14.202",
     "@types/node": "^20.11.19",
     "autoprefixer": "^10.4.16",
+    "daisyui": "^4.7.2",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -53,7 +54,7 @@
     "postcss": "^8.4.31",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.11",
-    "tailwindcss": "^3.3.5",
+    "tailwindcss": "^3.4.1",
     "typescript": "~5.2.2"
   },
   "prettier": {
