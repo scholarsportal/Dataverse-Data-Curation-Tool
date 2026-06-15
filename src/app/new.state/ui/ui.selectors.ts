@@ -255,20 +255,20 @@ export const selectOpenVariableChartTable = createSelector(
       if (Array.isArray(value.catStat)) {
         value.catStat.map((state) => {
           if (state['@_wgtd']) {
-            weightedCount = state['#text'] as string;
-            totalWeightCount += state['#text'] as number;
+            weightedCount = String(state['#text']);
+            totalWeightCount += Number(state['#text']);
           } else {
-            count = state['#text'] as string;
-            totalCount += state['#text'] as number;
+            count = String(state['#text']);
+            totalCount += Number(state['#text']);
           }
         });
       } else {
         if (value.catStat['@_wgtd']) {
-          weightedCount = value.catStat['#text'] as string;
-          totalWeightCount += value.catStat['#text'] as number;
+          weightedCount = String(value.catStat['#text']);
+          totalWeightCount += Number(value.catStat['#text']);
         } else {
-          count = value.catStat['#text'] as string;
-          totalCount += value.catStat['#text'] as number;
+          count = String(value.catStat['#text']);
+          totalCount += Number(value.catStat['#text']);
         }
       }
       chart[value.catValu] = {
@@ -406,28 +406,28 @@ export const selectOpenVariableSummaryStatistics = createSelector(
       processedVariables[variableID]?.sumStat.map((value) => {
         switch (value['@_type']) {
           case 'mean':
-            summaryStatistics.mean = value['#text'] as string;
+            summaryStatistics.mean = String(value['#text']);
             break;
           case 'mode':
-            summaryStatistics.mode = value['#text'] as string;
+            summaryStatistics.mode = String(value['#text']);
             break;
           case 'medn':
-            summaryStatistics.median = value['#text'] as string;
+            summaryStatistics.median = String(value['#text']);
             break;
           case 'invd':
-            summaryStatistics.totalInvalidCount = value['#text'] as string;
+            summaryStatistics.totalInvalidCount = String(value['#text']);
             break;
           case 'min':
-            summaryStatistics.minimum = value['#text'] as string;
+            summaryStatistics.minimum = String(value['#text']);
             break;
           case 'stdev':
-            summaryStatistics.standardDeviation = value['#text'] as string;
+            summaryStatistics.standardDeviation = String(value['#text']);
             break;
           case 'max':
-            summaryStatistics.maximum = value['#text'] as string;
+            summaryStatistics.maximum = String(value['#text']);
             break;
           case 'vald':
-            summaryStatistics.totalValidCount = value['#text'] as string;
+            summaryStatistics.totalValidCount = String(value['#text']);
             break;
         }
       });
