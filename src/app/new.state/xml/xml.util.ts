@@ -126,6 +126,20 @@ export function changeWeightForSelectedVariables(
     if (duplicateVariables[variableID]) {
       const currentCategories = duplicateVariables[variableID].catgry;
       if (currentCategories && Array.isArray(currentCategories)) {
+        // If none of the variable's category codes appear in the data, the
+        // codes and the raw values disagree — writing weighted stats would
+        // produce all-zero frequencies. Leave the variable unweighted.
+        const frequencyTable = frequencyTableForSelectedVariables[variableID];
+        const anyCategoryMatchesData = currentCategories.some(
+          (category) => frequencyTable[category.catValu] !== undefined,
+        );
+        if (
+          weightID !== 'remove' &&
+          currentCategories.length > 0 &&
+          !anyCategoryMatchesData
+        ) {
+          return;
+        }
         currentCategories.map((category) => {
           const baseStat = Array.isArray(category.catStat)
             ? category.catStat[0]
@@ -141,10 +155,9 @@ export function changeWeightForSelectedVariables(
             category.catStat = [
               baseStat,
               {
-                '#text':
-                  frequencyTableForSelectedVariables[variableID][
-                    category.catValu
-                  ] || 0,
+                // A category that never occurs in the data has a genuine
+                // weighted frequency of zero.
+                '#text': frequencyTable[category.catValu] ?? 0,
                 '@_type': 'freq',
                 '@_wgtd': 'wgtd',
                 '@_wgt-var': weightID,
