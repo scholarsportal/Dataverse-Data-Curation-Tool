@@ -170,6 +170,9 @@ export const XmlManipulationActions = createActionGroup({
       updatedGroups: VariableGroup[];
       updatedVariables: Variable[];
     }>(),
+    bulkSaveWeightAndGroupChangeError: props<{
+      error: string;
+    }>(),
     // 'Bulk Save Variable Info': props<{
     //   variableIDs: string[];
     //   groups?: string[];

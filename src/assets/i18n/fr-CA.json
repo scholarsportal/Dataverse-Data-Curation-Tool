@@ -80,6 +80,7 @@
     "FETCHING_WEIGHT_FAILED": "Échec de la récupération des données de poids depuis Dataverse",
     "DATASET_SAVING": "Sauvegarde de l'ensemble de données",
     "DATASET_SAVED": "Ensemble de données sauvegardé",
+    "DATASET_SAVE_ERROR": "Les modifications n'ont pas pu être appliquées. Les données de poids ne sont pas disponibles; veuillez recharger la page et réessayer.",
     "DATASET_UPLOADING": "Téléversement de l'ensemble de données",
     "DATASET_UPLOADED": "Ensemble de données téléversé",
     "DATASET_UPLOAD_FAILED": "Échec du téléversement de l’ensemble de données",

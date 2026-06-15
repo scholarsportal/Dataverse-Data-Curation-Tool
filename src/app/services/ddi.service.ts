@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
 import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 import { map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
@@ -32,11 +32,14 @@ export class DdiService {
     }
   });
 
-  private parseOptions: { ignoreAttributes: false; attributeNamePrefix: '@_' } =
-    {
-      ignoreAttributes: false,
-      attributeNamePrefix: '@_',
-    };
+  // parseTagValue MUST remain false. Dataverse's /api/edit endpoint matches
+  // <catValu> against its database by exact string equality, so zero-padded
+  // codes ("01") and decimal codes ("1.0") must round-trip byte-for-byte.
+  private parseOptions = {
+    ignoreAttributes: false as const,
+    attributeNamePrefix: '@_',
+    parseTagValue: false,
+  };
 
   fetchDecodedURL(url: string) {
     return this.http.get(url, { responseType: 'json' }).pipe(
@@ -126,13 +129,23 @@ export class DdiService {
     return parser.build(json);
   }
 
+  // Dataverse tab subsets quote character values ("01") and may use CRLF
+  // line endings. Strip both so values match DDI catValu codes exactly.
+  private cleanTabField(raw: string): string {
+    let value = raw.trim();
+    if (value.length >= 2 && value.startsWith('"') && value.endsWith('"')) {
+      value = value.slice(1, -1).replace(/\\"/g, '"');
+    }
+    return value;
+  }
+
   // From: https://stackoverflow.com/a/52947649
   splitLines(variable: string[], input: string): ParsedCrossTabData {
     // Split the input into lines
-    const lines = input.trim().split('\n');
+    const lines = input.trim().split(/\r?\n/);
 
     // Extract headers from the first line (not used, but useful for clarity)
-    const headers = lines[0].split('\t');
+    const headers = lines[0].split('\t').map((header) => this.cleanTabField(header));
 
     // Ensure the number of keys matches the number of columns
     if (variable.length !== headers.length) {
@@ -151,7 +164,7 @@ export class DdiService {
     lines.slice(1).forEach((line) => {
       const values = line.split('\t');
       values.forEach((value, index) => {
-        parsedData[variable[index]].push(value);
+        parsedData[variable[index]].push(this.cleanTabField(value));
       });
     });
 

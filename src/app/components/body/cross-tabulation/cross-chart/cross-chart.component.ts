@@ -1,14 +1,12 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   effect,
   input,
   OnInit,
 } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { Chart } from 'chart.js/auto';
-import { join } from 'path';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({

@@ -21,7 +21,7 @@ export interface SummaryStatistic {
 }
 
 export interface Category {
-  catValu: number;
+  catValu: string;
   labl: Label;
   catStat: SummaryStatistic[] | SummaryStatistic;
 }
@@ -124,8 +124,8 @@ interface FileDescription {
   fileTxt: {
     fileName: string;
     dimensns: {
-      caseQnty: number;
-      varQnty: number;
+      caseQnty: string;
+      varQnty: string;
     };
     fileType: string;
   };
