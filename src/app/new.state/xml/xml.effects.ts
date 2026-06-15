@@ -225,6 +225,22 @@ export class XmlEffects {
           allGroups,
           crossTabMetadata,
         }) => {
+          // Weighted frequencies are computed from the weight variable's raw
+          // data. If that data never loaded, refuse the assignment instead of
+          // silently writing zero frequencies for every category.
+          const isApplyingWeight =
+            !!weightToUpdate && weightToUpdate !== 'remove';
+          const weightData = crossTabMetadata[weightToUpdate];
+          if (
+            isApplyingWeight &&
+            (!Array.isArray(weightData) || weightData.length === 0)
+          ) {
+            return of(
+              XmlManipulationActions.bulkSaveWeightAndGroupChangeError({
+                error: 'weight-data-unavailable',
+              }),
+            );
+          }
           // Update groups
           const updatedGroups = changeGroupsForMultipleVariables(
             Object.values(structuredClone(allGroups)),
@@ -265,7 +281,10 @@ export class XmlEffects {
 
   clearBulkVariableStatusSuccess$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(XmlManipulationActions.bulkSaveWeightAndGroupChangeSuccess),
+      ofType(
+        XmlManipulationActions.bulkSaveWeightAndGroupChangeSuccess,
+        XmlManipulationActions.bulkSaveWeightAndGroupChangeError,
+      ),
       delay(10000),
       map(() => DatasetActions.clearVariableSaveStatus()),
     );

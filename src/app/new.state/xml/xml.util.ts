@@ -111,14 +111,12 @@ export function changeWeightForSelectedVariables(
     const frequencyTable: { [categoryID: string]: number } = {};
     if (weightVariableCrossTab && Array.isArray(weightVariableCrossTab)) {
       weightVariableCrossTab.forEach((weightValue, index) => {
-        const currentFrequencyTableValue =
-          frequencyTable[selectedVariableCrossTab[index]];
-        if (currentFrequencyTableValue) {
-          frequencyTable[selectedVariableCrossTab[index]] +=
-            Number(weightValue);
-        } else {
-          frequencyTable[selectedVariableCrossTab[index]] = Number(weightValue);
+        const weight = Number(weightValue);
+        if (Number.isNaN(weight)) {
+          return; // non-numeric weight cell — skip, never poison the sum
         }
+        const categoryKey = selectedVariableCrossTab[index];
+        frequencyTable[categoryKey] = (frequencyTable[categoryKey] ?? 0) + weight;
       });
     }
     frequencyTableForSelectedVariables[variableID] = frequencyTable;

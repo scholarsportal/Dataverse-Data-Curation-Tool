@@ -80,6 +80,7 @@
     "FETCHING_WEIGHT_FAILED": "Failed to fetch weight data from Dataverse",
     "DATASET_SAVING": "Dataset saving",
     "DATASET_SAVED": "Dataset saved",
+    "DATASET_SAVE_ERROR": "Changes could not be applied. Weight data is unavailable; please reload the page and try again.",
     "DATASET_UPLOADING": "Dataset uploading to Dataverse",
     "DATASET_UPLOADED": "Dataset uploaded to Dataverse",
     "DATASET_UPLOAD_FAILED": "Dataset upload failed",

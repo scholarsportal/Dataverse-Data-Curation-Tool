@@ -168,6 +168,15 @@ export const datasetReducer = createReducer(
       },
     };
   }),
+  on(XmlManipulationActions.bulkSaveWeightAndGroupChangeError, (state) => {
+    return {
+      ...state,
+      operationStatus: {
+        ...state.operationStatus,
+        save: 'error' as const,
+      },
+    };
+  }),
   on(XmlManipulationActions.startImportMetadata, (state) => {
     return {
       ...state,
