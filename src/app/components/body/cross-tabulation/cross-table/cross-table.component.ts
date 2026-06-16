@@ -66,14 +66,42 @@ export class CrossTableComponent {
     // Configure number formatting
     const numberFormat = jQuery.pivotUtilities.numberFormat;
     const intFormat = numberFormat({ digitsAfterDecimal: 1 });
+    const percentFormat = numberFormat({ digitsAfterDecimal: 1, scaler: 100, suffix: '%' });
+
+    // Choose aggregator based on selected option
+    let aggregator: any;
+    const aggName = this.aggregatorName();
+    const utils = jQuery.pivotUtilities;
+    const tpl = utils.aggregatorTemplates;
+
+    if (aggName === 'Count') {
+      aggregator = tpl.sum(intFormat)(['value']);
+    } else {
+      const fractionType =
+        aggName === 'Count as Fraction of Rows'
+          ? 'row'
+          : aggName === 'Count as Fraction of Columns'
+          ? 'col'
+          : aggName === 'Count as Fraction of Total'
+          ? 'total'
+          : null;
+
+      if (fractionType) {
+        aggregator = tpl.fractionOf(
+          tpl.sum(intFormat),
+          fractionType,
+          percentFormat,
+        )(['value']);
+      } else {
+        aggregator = tpl.sum(intFormat)(['value']);
+      }
+    }
 
     // Create pivot table
     targetElement.pivot(this.data(), {
       rows: this.rows(),
       cols: this.cols(),
-      aggregator: jQuery.pivotUtilities.aggregatorTemplates.sum(intFormat)([
-        'value',
-      ]),
+      aggregator,
       rendererName: 'Table',
       showUI: false,
     });
